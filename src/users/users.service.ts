@@ -27,15 +27,27 @@ export class UsersService {
   async findOne(id: number): Promise<User | null> {
     const user = await this.userRepository.findOne({ where: { id } });
 
-    if(user === null) {
+    if (user === null) {
       throw new NotFoundException();
     }
 
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const updateResult = await this.userRepository.update(id, updateUserDto);
+
+      if (!!updateResult.affected) {
+        return {
+          updated: true
+        };
+      }
+    } catch (e) {
+      throw new BadRequestException();
+    }
+
+    throw new NotFoundException();
   }
 
   async remove(id: number) {
@@ -45,7 +57,7 @@ export class UsersService {
       if (!!deleteResult.affected) {
         return {
           deleted: true
-        }
+        };
       }
     } catch (e) {
       throw new BadRequestException();
