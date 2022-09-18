@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -38,7 +38,19 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    try {
+      const deleteResult = await this.userRepository.delete({ id });
+
+      if (!!deleteResult.affected) {
+        return {
+          deleted: true
+        }
+      }
+    } catch (e) {
+      throw new BadRequestException();
+    }
+
+    throw new NotFoundException();
   }
 }
