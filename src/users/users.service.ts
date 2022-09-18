@@ -14,14 +14,14 @@ export class UsersService {
   ) {
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
     await this.userRepository.save(user);
     return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
   findOne(id: number) {
