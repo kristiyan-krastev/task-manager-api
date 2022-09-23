@@ -1,9 +1,12 @@
-import { IsOptional, MaxLength } from "class-validator";
+import { IsOptional, MaxLength, MinLength } from "class-validator";
 
 export class CreateTaskDto {
 
   @MaxLength(100, {
-    message: "Title too long. Maximum length is $constraint1, but actual is $value"
+    message: "Title too long. Maximum length is $constraint1, but actual is '$value'"
+  })
+  @MinLength(1, {
+    message: "Title too short. Minimum length is $constraint1, but actual is '$value'"
   })
   title: string;
 
