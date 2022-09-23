@@ -24,8 +24,14 @@ export class TasksService {
     return await this.taskRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: number) {
+    const task = await this.taskRepository.findOne({where: {id}});
+
+    if (task === null) {
+      throw new NotFoundException();
+    }
+
+    return task;
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
