@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from "@nestjs/typeorm";
@@ -28,8 +28,28 @@ export class TasksService {
     return `This action returns a #${id} task`;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: number, updateTaskDto: UpdateTaskDto) {
+    const task = await this.taskRepository.findOne({where: {id}});
+
+    if (task === null) {
+      throw new NotFoundException();
+    }
+
+    if (Object.keys(updateTaskDto).length === 0) {
+      throw new BadRequestException({updated: false}, "You did not provide something to update the object with.")
+    }
+
+    try {
+      const updatedResult = await this.taskRepository.update(id, updateTaskDto);
+
+      if(!!updatedResult.affected) {
+        return {
+          updated: true
+        }
+      }
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   remove(id: number) {
