@@ -1,10 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseFilters, ParseIntPipe } from "@nestjs/common";
-import { TasksService } from './tasks.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { HttpExceptionFilter } from "../exceptions/http-exception.filter";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
+import { TasksService } from "./tasks.service";
+import { CreateTaskDto } from "./dto/create-task.dto";
+import { UpdateTaskDto } from "./dto/update-task.dto";
 
-@UseFilters(new HttpExceptionFilter())
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}

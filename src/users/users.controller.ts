@@ -1,10 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseFilters } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { HttpExceptionFilter } from "../exceptions/http-exception.filter";
 
-@UseFilters(new HttpExceptionFilter())
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {
