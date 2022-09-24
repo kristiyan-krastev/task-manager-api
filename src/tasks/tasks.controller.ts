@@ -23,12 +23,12 @@ export class TasksController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return await this.tasksService.update(+id, updateTaskDto);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateTaskDto: UpdateTaskDto) {
+    return await this.tasksService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.tasksService.remove(id);
   }
 }
