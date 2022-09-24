@@ -28,7 +28,7 @@ export class TasksController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.tasksService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.tasksService.remove(id);
   }
 }
