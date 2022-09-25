@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../users/entities/user.entity";
 
 @Entity({name: 'tasks', synchronize: false})
 export class Task {
@@ -10,4 +11,25 @@ export class Task {
 
   @Column({name: 'description'})
   description: string;
+
+  @ManyToMany(() => User, user => user.task, {
+    cascade: true
+  })
+  @JoinTable({
+    name: "users_tasks",
+    joinColumn: {
+      name: "userId", referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "taskId"
+    }
+  })
+  users: User[];
+
+  public addUser(user: User): void {
+    if(this.users == null) {
+      this.users = new Array<User>();
+    }
+    this.users.push(user);
+  }
 }
