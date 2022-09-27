@@ -26,8 +26,8 @@ export class TasksService {
     return await this.taskRepository.find();
   }
 
-  async findOne(id: number) {
-    const task = await this.taskRepository.findOne({where: {id}});
+  async findOne(id: number, withDetails = false) {
+    const task = await this.taskRepository.findOne({where: {id}, relations: {users: withDetails}});
 
     if (task === null) {
       throw new NotFoundException();

@@ -17,6 +17,11 @@ export class TasksController {
     return await this.tasksService.findAll();
   }
 
+  @Get(':id/details')
+  async findOneWithDetails(@Param('id', ParseIntPipe) id: number) {
+    return await this.tasksService.findOne(id, true);
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.tasksService.findOne(id);
