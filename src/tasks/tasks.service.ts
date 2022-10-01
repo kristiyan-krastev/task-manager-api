@@ -77,4 +77,26 @@ export class TasksService {
 
     throw new NotFoundException();
   }
+
+  async removeUserFromTask(taskId: number, userId: number) {
+    const task = await this.findOne(taskId, true);
+
+    if (!task) {
+      throw new NotFoundException();
+    }
+
+    const user = await this.usersService.findOne(userId);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    task.users = task.users.filter(user => user.id !== userId);
+
+    await this.taskRepository.save(task);
+
+    return {
+      deleted: true
+    }
+  }
 }
