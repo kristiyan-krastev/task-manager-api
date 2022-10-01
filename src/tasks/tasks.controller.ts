@@ -36,4 +36,12 @@ export class TasksController {
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.tasksService.remove(id);
   }
+
+  @Delete(':taskId/users/:userId')
+  async removeUserFromTask(
+    @Param('taskId', ParseIntPipe) taskId: number,
+    @Param('userId', ParseIntPipe) userId: number
+  ) {
+    return await this.tasksService.removeUserFromTask(taskId, userId);
+  }
 }
