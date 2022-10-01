@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Task } from "../../tasks/entities/task.entity";
 
 @Entity({name: 'users', synchronize: false})
 export class User {
@@ -10,4 +11,7 @@ export class User {
 
   @Column({name: 'lastName'})
   lastName: string;
+
+  @ManyToMany(() => Task, task => task.users)
+  task: Task;
 }
