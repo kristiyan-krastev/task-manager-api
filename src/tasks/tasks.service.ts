@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Task } from "./entities/task.entity";
 import { Repository } from "typeorm";
 import { UsersService } from "../users/users.service";
+import { TasksNotFoundException } from "./exceptions/tasks-not-found.exception";
+import { UserNotFoundException } from "../users/exceptions/user-not-found.exception";
 
 @Injectable()
 export class TasksService {
@@ -30,7 +32,7 @@ export class TasksService {
     const task = await this.taskRepository.findOne({where: {id}, relations: {users: withDetails}});
 
     if (task === null) {
-      throw new NotFoundException();
+      throw new TasksNotFoundException(id);
     }
 
     return task;
@@ -42,11 +44,11 @@ export class TasksService {
     }
 
     let task = await this.taskRepository.findOne({where: {id}});
-    if(!task) throw new NotFoundException();
+    if(!task) throw new TasksNotFoundException(id);
 
     for (let i = 0; i < updateTaskDto.userIds?.length; i++) {
       let user = await this.usersService.findOne(updateTaskDto.userIds[i]);
-      if (user == null) throw new NotFoundException();
+      if (user == null) throw new UserNotFoundException(updateTaskDto.userIds[i]);
 
       task.addUser(user);
     }
@@ -72,23 +74,23 @@ export class TasksService {
         };
       }
     } catch (e) {
-      throw new BadRequestException();
+      throw new InternalServerErrorException();
     }
 
-    throw new NotFoundException();
+    throw new TasksNotFoundException(id);
   }
 
   async removeUserFromTask(taskId: number, userId: number) {
     const task = await this.findOne(taskId, true);
 
     if (!task) {
-      throw new NotFoundException();
+      throw new TasksNotFoundException(taskId);
     }
 
     const user = await this.usersService.findOne(userId);
 
     if (!user) {
-      throw new NotFoundException();
+      throw new UserNotFoundException(userId);
     }
 
     task.users = task.users.filter(user => user.id !== userId);
