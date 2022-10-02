@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { Repository } from "typeorm";
+import { UserNotFoundException } from "../exceptions/users/user-not-found.exception";
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (user === null) {
-      throw new NotFoundException();
+      throw new UserNotFoundException(id);
     }
 
     return user;
@@ -44,10 +45,10 @@ export class UsersService {
         };
       }
     } catch (e) {
-      throw new BadRequestException();
+      throw new InternalServerErrorException();
     }
 
-    throw new NotFoundException();
+    throw new UserNotFoundException(id);
   }
 
   async remove(id: number) {
@@ -60,9 +61,9 @@ export class UsersService {
         };
       }
     } catch (e) {
-      throw new BadRequestException();
+      throw new InternalServerErrorException();
     }
 
-    throw new NotFoundException();
+    throw new UserNotFoundException(id);
   }
 }
